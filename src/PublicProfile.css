@@ -1,0 +1,44 @@
+/* Reusing much of Profile.css with some additions for the public view */
+@import './Profile.css';
+
+.public-profile-loading {
+  padding-top: 150px;
+  text-align: center;
+  color: white;
+  min-height: 100vh;
+}
+
+.public-badge {
+  background: rgba(255, 255, 255, 0.1);
+  padding: 0.3rem 1rem;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  margin-top: 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  display: inline-block;
+}
+
+.public-actions {
+  margin-top: 3rem;
+  display: flex;
+  justify-content: center;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  padding-top: 2rem;
+}
+
+.back-to-community-btn {
+  background: var(--surface, #1E1E2E);
+  border: 1px solid var(--accent, #FF7B54);
+  color: var(--text, white);
+  padding: 0.8rem 2rem;
+  border-radius: 50px;
+  text-decoration: none;
+  font-weight: 500;
+  transition: all 0.2s;
+}
+
+.back-to-community-btn:hover {
+  background: var(--accent, #FF7B54);
+  color: white;
+}

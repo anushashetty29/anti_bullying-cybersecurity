@@ -1,0 +1,194 @@
+.report-page {
+  min-height: 100vh;
+  padding: 8rem 2rem 4rem;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.report-layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4rem;
+  align-items: start;
+}
+
+.section-tag {
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--teal);
+  margin-bottom: 0.8rem;
+}
+
+.report-info h1 {
+  font-family: var(--font-heading);
+  font-size: clamp(2.2rem, 4vw, 3.2rem);
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  line-height: 1.1;
+  margin-bottom: 1rem;
+}
+.report-info h1 .highlight { color: var(--accent); }
+
+.report-sub {
+  color: var(--text-muted);
+  font-size: 1rem;
+  line-height: 1.7;
+  font-weight: 300;
+  margin-bottom: 2rem;
+}
+
+.report-perks {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+}
+.report-perks li {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  font-size: 0.92rem;
+  color: var(--text-muted);
+}
+.check {
+  color: var(--green);
+  font-size: 1.1rem;
+  font-weight: 700;
+}
+
+/* ── FORM CARD ── */
+.report-card {
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius);
+  padding: 2.5rem;
+}
+.report-card h3 {
+  font-family: var(--font-heading);
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin-bottom: 1.8rem;
+}
+
+.form-group {
+  margin-bottom: 1.2rem;
+}
+
+.flex-group {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.form-group > label {
+  display: block;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+}
+.optional { font-weight: 400; opacity: 0.6; }
+
+.form-control {
+  width: 100%;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius-sm);
+  color: var(--text);
+  font-size: 0.95rem;
+  padding: 0.75rem 1rem;
+  outline: none;
+  transition: border-color 0.2s;
+  appearance: none;
+}
+.form-control:focus { border-color: var(--accent); }
+.form-control::placeholder { color: var(--text-muted); }
+.form-control.error { border-color: var(--accent); }
+select.form-control option { background: #16213E; }
+textarea.form-control { resize: vertical; }
+
+.err-msg {
+  display: block;
+  font-size: 0.78rem;
+  color: var(--accent);
+  margin-top: 0.3rem;
+}
+
+.severity-row {
+  display: grid;
+  grid-template-columns: repeat(3,1fr);
+  gap: 0.5rem;
+  margin-top: 0.4rem;
+}
+.sev-btn {
+  padding: 0.6rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--card-border);
+  background: transparent;
+  color: var(--text-muted);
+  font-size: 0.82rem;
+  transition: all 0.2s;
+  text-align: center;
+}
+.sev-btn:hover, .sev-btn.active {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: rgba(233,69,96,0.1);
+}
+
+.checkbox-group {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+.checkbox-group input[type="checkbox"] {
+  width: 16px; height: 16px;
+  accent-color: var(--accent);
+}
+.checkbox-group label {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  margin: 0;
+}
+
+.submit-btn {
+  width: 100%;
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  padding: 0.9rem;
+  border-radius: 50px;
+  font-weight: 600;
+  font-size: 1rem;
+  transition: transform 0.2s, opacity 0.2s;
+  margin-top: 0.5rem;
+}
+.submit-btn:hover { transform: scale(1.02); opacity: 0.9; }
+
+/* ── SUCCESS BOX ── */
+.success-box {
+  text-align: center;
+  max-width: 480px;
+  margin: 6rem auto;
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius);
+  padding: 3rem 2.5rem;
+}
+.success-icon { font-size: 3rem; margin-bottom: 1rem; }
+.success-box h2 { font-family: var(--font-heading); font-size: 1.6rem; margin-bottom: 0.8rem; }
+.success-box p { color: var(--text-muted); font-size: 0.95rem; line-height: 1.7; margin-bottom: 2rem; font-weight: 300; }
+.btn-primary {
+  background: var(--accent); color: #fff;
+  border: none; padding: 0.85rem 2rem;
+  border-radius: 50px; font-weight: 500; font-size: 1rem;
+  transition: transform 0.2s;
+}
+.btn-primary:hover { transform: scale(1.03); }
+
+@media (max-width: 768px) {
+  .report-layout { grid-template-columns: 1fr; gap: 2.5rem; }
+  .report-page { padding: 7rem 1.5rem 3rem; }
+}

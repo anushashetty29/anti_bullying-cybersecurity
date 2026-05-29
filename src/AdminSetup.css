@@ -1,0 +1,35 @@
+.admin-setup-page {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: var(--bg);
+  padding: 2rem;
+}
+
+.admin-setup-card {
+  width: 100%;
+  max-width: 420px;
+  background: var(--card-bg);
+  padding: 3rem;
+  border-radius: 20px;
+  border: 1px solid var(--card-border);
+  text-align: center;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+}
+
+.admin-setup-card h1 {
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+}
+
+.admin-setup-subtitle {
+  color: var(--text-muted);
+  margin-bottom: 2rem;
+}
+
+.success-msg {
+  color: #35d07f;
+  font-size: 0.9rem;
+  margin-bottom: 1rem;
+}

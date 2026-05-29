@@ -1,0 +1,36 @@
+{
+    "groups": [
+        {
+            "id": "1",
+            "name": "General Discussion",
+            "description": "A place to talk about anything and everything.",
+            "type": "public",
+            "posts": [
+                {
+                    "author": "User1",
+                    "content": "Welcome to the group!"
+                }
+            ]
+        },
+        {
+            "id": "2",
+            "name": "Cyberbullying Support",
+            "description": "Share experiences and get support from others.",
+            "type": "public",
+            "posts": [
+                {
+                    "author": "User2",
+                    "content": "This is a safe space."
+                }
+            ]
+        },
+        {
+            "id": "3",
+            "name": "Project Phoenix",
+            "description": "A private group for team collaboration.",
+            "type": "private",
+            "code": "SECRET123",
+            "posts": []
+        }
+    ]
+}

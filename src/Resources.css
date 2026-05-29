@@ -1,0 +1,96 @@
+﻿.resources-page {
+  padding-top: 100px;
+  min-height: 100vh;
+  margin-bottom: 5rem;
+}
+
+.resources-header {
+  text-align: center;
+  margin-bottom: 4rem;
+}
+
+.resources-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.resource-section {
+  background: var(--surface);
+  padding: 2rem;
+  border-radius: 1rem;
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.resource-section h2 {
+  font-size: 1.5rem;
+  margin-bottom: 1.5rem;
+  color: var(--highlight);
+}
+
+.resource-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.resource-item {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  background: rgba(255, 255, 255, 0.02);
+  transition: transform 0.2s, background 0.2s;
+}
+
+.resource-item:hover {
+  transform: translateY(-2px);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.resource-icon {
+  font-size: 1.5rem;
+}
+
+.resource-title {
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+}
+
+.resource-link {
+  font-size: 0.875rem;
+  color: var(--accent);
+  text-decoration: none;
+}
+
+.helpline-banner {
+  max-width: 800px;
+  margin: 5rem auto;
+  padding: 3rem;
+  background: linear-gradient(135deg, var(--accent) 0%, #0077B6 100%);
+  border-radius: 1.5rem;
+  text-align: center;
+  color: white;
+}
+
+.helpline-banner h2 {
+  margin-bottom: 1rem;
+}
+
+.helpline-banner p {
+  margin-bottom: 2rem;
+  opacity: 0.9;
+}
+
+.helpline-buttons {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+}
+
+
+

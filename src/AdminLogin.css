@@ -1,0 +1,94 @@
+.admin-login-page {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: var(--bg);
+  padding: 2rem;
+}
+
+.admin-login-card {
+  width: 100%;
+  max-width: 420px;
+  background: var(--card-bg);
+  padding: 3rem;
+  border-radius: 20px;
+  border: 1px solid var(--card-border);
+  text-align: center;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+}
+
+.admin-login-card h1 {
+  font-size: 2rem;
+  margin-bottom: 2rem;
+}
+
+.admin-login-page .input-group {
+  text-align: left;
+  margin-bottom: 1.5rem;
+}
+
+.admin-login-page .input-group label {
+  display: block;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.1rem;
+  margin-bottom: 0.5rem;
+}
+
+.admin-login-page .input-group input {
+  width: 100%;
+  padding: 1rem;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  color: #fff;
+  font-size: 1rem;
+  outline: none;
+  transition: border 0.3s;
+}
+
+.admin-login-page .input-group input:focus {
+  border-color: var(--accent);
+}
+
+.admin-login-page .error-msg {
+  color: var(--accent);
+  font-size: 0.85rem;
+  margin-bottom: 1rem;
+}
+
+.admin-login-page .login-btn {
+  width: 100%;
+  padding: 1rem;
+  background: var(--accent);
+  border: none;
+  border-radius: 12px;
+  color: #fff;
+  font-weight: 700;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: transform 0.2s, opacity 0.2s;
+}
+
+.admin-login-page .login-btn:hover {
+  transform: translateY(-2px);
+  opacity: 0.9;
+}
+
+.admin-login-page .register-link-from-login {
+  margin-top: 1.5rem;
+  font-size: 0.9rem;
+}
+
+.admin-login-page .register-link-from-login a {
+  color: var(--accent);
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.admin-login-page .register-link-from-login a:hover {
+  text-decoration: underline;
+}
