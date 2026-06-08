@@ -1,4 +1,4 @@
-﻿.login-page {
+.login-page {
   min-height: 100vh;
   display: flex;
   justify-content: center;
@@ -114,4 +114,23 @@
     color: #007bff;
     text-decoration: none;
     font-weight: bold;
+}
+
+.forgot-password-container {
+    text-align: right;
+    margin-top: -0.5rem;
+    margin-bottom: 1.5rem;
+    font-size: 0.9rem;
+}
+
+.forgot-password-container a {
+    color: #007bff;
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.3s;
+}
+
+.forgot-password-container a:hover {
+    color: #0056b3;
+    text-decoration: underline;
 }

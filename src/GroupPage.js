@@ -1,9 +1,16 @@
-﻿import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import io from 'socket.io-client';
+import GuidelinesModal from './GuidelinesModal';
 import './GroupPage.css';
 
-const socket = io('');
+// Socket created once outside component so it survives re-renders
+const socket = io(
+    window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+        ? 'http://localhost:3001'
+        : '',
+    { autoConnect: true }
+);
 
 const GroupPage = () => {
     const { id } = useParams();
@@ -15,16 +22,63 @@ const GroupPage = () => {
     const [onlineUsers, setOnlineUsers] = useState([]);
     const [showMembers, setShowMembers] = useState(false);
     const [showSettings, setShowSettings] = useState(false);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [hasAgreed, setHasAgreed] = useState(true);
+
+    // ── Freeze state ──────────────────────────────────────────────
+    const [isFrozen, setIsFrozen] = useState(false);
+    const [freezeSecondsLeft, setFreezeSecondsLeft] = useState(0);
+    const [freezeReason, setFreezeReason] = useState('');
+    const freezeTimerRef = useRef(null);
+    // ─────────────────────────────────────────────────────────────
+
     const postsContainerRef = useRef(null);
     const userEmail = localStorage.getItem('userEmail');
+
+    // ── Freeze helpers ────────────────────────────────────────────
+    const startFreezeCountdown = useCallback((seconds) => {
+        if (freezeTimerRef.current) clearInterval(freezeTimerRef.current);
+        const clamped = Math.max(0, Math.ceil(seconds));
+        setFreezeSecondsLeft(clamped);
+        setIsFrozen(clamped > 0);
+
+        if (clamped <= 0) return;
+
+        freezeTimerRef.current = setInterval(() => {
+            setFreezeSecondsLeft(prev => {
+                if (prev <= 1) {
+                    clearInterval(freezeTimerRef.current);
+                    freezeTimerRef.current = null;
+                    setIsFrozen(false);
+                    setFreezeReason('');
+                    return 0;
+                }
+                return prev - 1;
+            });
+        }, 1000);
+    }, []);
+
+    const applyFreezeData = useCallback((data) => {
+        if (!data || !data.isFrozen) return;
+        setFreezeReason(data.reason || 'Community guidelines violation');
+        const seconds = data.frozenUntil
+            ? Math.max(0, Math.ceil((new Date(data.frozenUntil) - Date.now()) / 1000))
+            : (data.minutesLeft || 30) * 60;
+        startFreezeCountdown(seconds);
+    }, [startFreezeCountdown]);
+
+    const formatFreezeTime = (totalSeconds) => {
+        const m = Math.floor(totalSeconds / 60);
+        const s = totalSeconds % 60;
+        return `${m}m ${s.toString().padStart(2, '0')}s`;
+    };
+    // ─────────────────────────────────────────────────────────────
 
     const handleLeaveGroup = async () => {
         try {
             const response = await fetch('/api/groups/' + id + '/leave', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ email: userEmail }),
             });
             if (response.ok) {
@@ -41,9 +95,7 @@ const GroupPage = () => {
     const handleDeleteGroup = async () => {
         if (window.confirm('Are you sure you want to completely delete this group?')) {
             try {
-                const response = await fetch('/api/groups/' + id, {
-                    method: 'DELETE',
-                });
+                const response = await fetch('/api/groups/' + id, { method: 'DELETE' });
                 if (response.ok) {
                     alert('Group deleted');
                     navigate('/community');
@@ -57,9 +109,24 @@ const GroupPage = () => {
     };
 
     useEffect(() => {
-        // Join the group room
+        if (!userEmail) {
+            alert('You must be logged in to view group pages.');
+            navigate('/login');
+            return;
+        }
+
+        const agreed = localStorage.getItem('hasAgreedToGuidelines');
+        if (!agreed) {
+            setHasAgreed(false);
+            setIsModalOpen(true);
+            return;
+        }
+
         const userName = localStorage.getItem('userName');
         socket.emit('join_group', { groupId: id, userEmail, userName });
+
+        // Check if user is currently frozen on connect / page load
+        socket.emit('check_freeze', { email: userEmail });
 
         const fetchGroupData = async () => {
             try {
@@ -67,9 +134,7 @@ const GroupPage = () => {
                 if (response.ok) {
                     const data = await response.json();
                     setGroupName(data.name);
-                    setPosts(data.posts);
-                } else {
-                    console.error('Group not found');
+                    setPosts(data.posts || []);
                 }
             } catch (error) {
                 console.error('Error fetching group data:', error);
@@ -90,6 +155,13 @@ const GroupPage = () => {
         };
         fetchMembers();
 
+        // ── Socket listeners ─────────────────────────────────────
+        // Remove any previous listeners first to prevent duplicates
+        socket.off('receive_message');
+        socket.off('update_online_users');
+        socket.off('account_frozen');
+        socket.off('freeze_status');
+
         socket.on('receive_message', (data) => {
             const formattedPost = {
                 id: data.id,
@@ -98,20 +170,36 @@ const GroupPage = () => {
                 content: data.content,
                 timestamp: data.timestamp
             };
-            setPosts((prevPosts) => [...prevPosts, formattedPost]);
+            setPosts(prev => [...prev, formattedPost]);
         });
 
-        // Listen for online users updates
         socket.on('update_online_users', (onlineUserObjects) => {
             setOnlineUsers(onlineUserObjects);
+        });
+
+        // Triggered when the server freezes this user's account
+        socket.on('account_frozen', (data) => {
+            applyFreezeData(data);
+        });
+
+        // Triggered on connect if account is already frozen
+        socket.on('freeze_status', (data) => {
+            if (data && data.isFrozen) applyFreezeData(data);
         });
 
         return () => {
             socket.off('receive_message');
             socket.off('update_online_users');
+            socket.off('account_frozen');
+            socket.off('freeze_status');
+            if (freezeTimerRef.current) {
+                clearInterval(freezeTimerRef.current);
+                freezeTimerRef.current = null;
+            }
         };
-    }, [id, userEmail]);
+    }, [id, userEmail, hasAgreed, applyFreezeData, navigate]);
 
+    // Auto-scroll to bottom when new messages arrive
     useEffect(() => {
         if (postsContainerRef.current) {
             postsContainerRef.current.scrollTop = postsContainerRef.current.scrollHeight;
@@ -119,21 +207,47 @@ const GroupPage = () => {
     }, [posts]);
 
     const handleSendMessage = () => {
-        if (newMessage.trim()) {
-            const userName = localStorage.getItem('userName');
-            const messageData = {
-                group: id,
-                author: userEmail || 'Anonymous',
-                author_name: userName || (userEmail ? userEmail.split('@')[0] : 'Anonymous'),
-                content: newMessage,
-            };
-            socket.emit('send_message', messageData);
-            setNewMessage('');
+        if (isFrozen) return;
+        const trimmed = newMessage.trim();
+        if (!trimmed) return;
+
+        const userName = localStorage.getItem('userName');
+        socket.emit('send_message', {
+            group: id,
+            author: userEmail || 'Anonymous',
+            author_name: userName || (userEmail ? userEmail.split('@')[0] : 'Anonymous'),
+            content: trimmed,
+        });
+        setNewMessage('');
+    };
+
+    const handleKeyPress = (e) => {
+        if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
+            handleSendMessage();
         }
     };
 
+    if (!hasAgreed) {
+        return (
+            <GuidelinesModal
+                isOpen={isModalOpen}
+                onAgree={() => {
+                    localStorage.setItem('hasAgreedToGuidelines', 'true');
+                    setIsModalOpen(false);
+                    setHasAgreed(true);
+                }}
+                onDecline={() => {
+                    setIsModalOpen(false);
+                    navigate(-1);
+                }}
+            />
+        );
+    }
+
     return (
         <div className="group-page-container">
+            {/* ── HEADER ── */}
             <div className="group-header">
                 <div className="group-header-info">
                     <button className="chat-back-btn" onClick={() => navigate(-1)} aria-label="Go Back">
@@ -147,12 +261,13 @@ const GroupPage = () => {
                     <div className="group-title-status">
                         <h1>{groupName}</h1>
                         <span className="online-status">
-                            <span className="online-dot"></span> 
+                            <span className="online-dot"></span>
                             {onlineUsers.length} Online
                         </span>
                     </div>
                 </div>
                 <div className="header-actions">
+                    {/* Members dropdown */}
                     <div className="members-dropdown">
                         <button onClick={() => setShowMembers(!showMembers)} className="members-btn" aria-label="Group Members">
                             <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor" style={{ marginRight: '8px' }}>
@@ -171,14 +286,14 @@ const GroupPage = () => {
                                         return Array.from(allUsersMap.values()).map((member, index) => {
                                             const displayName = member.name || (member.email ? member.email.split('@')[0] : 'Anonymous');
                                             return (
-                                            <li key={index} className={member.isOnline ? "member-online" : ""}>
-                                                <div className="member-avatar relative-avatar">
-                                                    {displayName.charAt(0).toUpperCase()}
-                                                    {member.isOnline && <span className="status-badge"></span>}
-                                                </div>
-                                                <span>{displayName}</span>
-                                                {member.isOnline && <span className="online-text-label">Online</span>}
-                                            </li>
+                                                <li key={index} className={member.isOnline ? "member-online" : ""}>
+                                                    <div className="member-avatar relative-avatar">
+                                                        {displayName.charAt(0).toUpperCase()}
+                                                        {member.isOnline && <span className="status-badge"></span>}
+                                                    </div>
+                                                    <span>{displayName}</span>
+                                                    {member.isOnline && <span className="online-text-label">Online</span>}
+                                                </li>
                                             );
                                         });
                                     })()}
@@ -186,6 +301,8 @@ const GroupPage = () => {
                             </div>
                         )}
                     </div>
+
+                    {/* Settings dropdown */}
                     <div className="settings-dropdown">
                         <button onClick={() => setShowSettings(!showSettings)} className="settings-btn" aria-label="Group Settings">
                             <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
@@ -201,6 +318,27 @@ const GroupPage = () => {
                     </div>
                 </div>
             </div>
+
+            {/* ── FREEZE BANNER ── */}
+            {isFrozen && (
+                <div className="freeze-banner" role="alert">
+                    <div className="freeze-banner-icon">❄️</div>
+                    <div className="freeze-banner-body">
+                        <div className="freeze-banner-title">Account Temporarily Frozen</div>
+                        <div className="freeze-banner-reason">Reason: {freezeReason}</div>
+                        <div className="freeze-banner-subtitle">
+                            You can read messages but cannot send any until the freeze expires.
+                            A freeze notification email has been sent to your inbox.
+                        </div>
+                    </div>
+                    <div className="freeze-countdown">
+                        <div className="freeze-countdown-label">Unfreezes in</div>
+                        <div className="freeze-countdown-timer">{formatFreezeTime(freezeSecondsLeft)}</div>
+                    </div>
+                </div>
+            )}
+
+            {/* ── MESSAGES ── */}
             <div className="posts-container" ref={postsContainerRef}>
                 {posts.length === 0 ? (
                     <div className="empty-chat">
@@ -210,7 +348,7 @@ const GroupPage = () => {
                     posts.map((post, index) => {
                         const isMyMessage = post.author_email === userEmail;
                         return (
-                            <div key={index} className={"post-wrapper " + (isMyMessage ? 'my-wrapper' : 'other-wrapper')}>
+                            <div key={post.id || index} className={"post-wrapper " + (isMyMessage ? 'my-wrapper' : 'other-wrapper')}>
                                 {!isMyMessage && (
                                     <div className="chat-avatar">
                                         {(post.author_name || post.author_email || 'A').charAt(0).toUpperCase()}
@@ -228,23 +366,38 @@ const GroupPage = () => {
                     })
                 )}
             </div>
-            <div className="new-post-form">
-                <textarea
-                    placeholder="Type your message..."
-                    value={newMessage}
-                    onChange={(e) => setNewMessage(e.target.value)}
-                    onKeyPress={(e) => {
-                        if (e.key === 'Enter' && !e.shiftKey) {
-                            e.preventDefault();
-                            handleSendMessage();
-                        }
-                    }}
-                />
-                <button onClick={handleSendMessage} aria-label="Send">
-                    <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
-                        <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"></path>
-                    </svg>
-                </button>
+
+            {/* ── MESSAGE INPUT (disabled when frozen) ── */}
+            <div className={`new-post-form ${isFrozen ? 'frozen-form' : ''}`}>
+                {isFrozen ? (
+                    <div className="frozen-input-box" title="Your account is frozen. Please wait for it to unfreeze.">
+                        <span className="frozen-input-icon">🔒</span>
+                        <span className="frozen-input-text">
+                            Account frozen — {formatFreezeTime(freezeSecondsLeft)} remaining
+                        </span>
+                    </div>
+                ) : (
+                    <>
+                        <textarea
+                            id="message-input"
+                            placeholder="Type your message..."
+                            value={newMessage}
+                            onChange={(e) => setNewMessage(e.target.value)}
+                            onKeyPress={handleKeyPress}
+                            disabled={isFrozen}
+                            aria-label="Message input"
+                        />
+                        <button
+                            onClick={handleSendMessage}
+                            aria-label="Send message"
+                            disabled={isFrozen || !newMessage.trim()}
+                        >
+                            <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
+                                <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"></path>
+                            </svg>
+                        </button>
+                    </>
+                )}
             </div>
         </div>
     );

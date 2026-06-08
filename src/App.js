@@ -1,4 +1,4 @@
-﻿import React, { useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
 import Navbar from './Navbar';
 import Footer from './Footer';
@@ -21,6 +21,8 @@ import GroupPage from './GroupPage';
 import Chatbot from './Chatbot';
 import JoinGroup from './JoinGroup';
 import GroupCreationSuccess from './GroupCreationSuccess';
+import ForgotPassword from './ForgotPassword';
+import ResetPassword from './ResetPassword';
 import './App.css';
 
 function ScrollToTop() {
@@ -52,6 +54,8 @@ function App() {
             <Route path="/home" element={<Home />} />
             <Route path="/how-it-works" element={<HowItWorks />} />
             <Route path="/login" element={<Login />} />
+            <Route path="/forgot-password" element={<ForgotPassword />} />
+            <Route path="/reset-password" element={<ResetPassword />} />
             <Route path="/admin-login" element={<AdminLogin />} />
             <Route path="/admin-setup" element={<AdminSetup />} />
             <Route path="/register" element={<Register />} />

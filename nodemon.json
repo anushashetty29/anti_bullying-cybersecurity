@@ -1,3 +1,3 @@
 {
-  "ignore": ["database.db", "database.db-journal"]
+  "ignore": ["database.db", "database.db-journal", "db.json"]
 }

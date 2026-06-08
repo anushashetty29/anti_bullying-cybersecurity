@@ -1,9 +1,11 @@
 ﻿import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import GuidelinesModal from './GuidelinesModal';
 import './JoinGroup.css';
 
 const JoinGroup = () => {
     const [code, setCode] = useState('');
+    const [isModalOpen, setIsModalOpen] = useState(false);
     const navigate = useNavigate();
     const userEmail = localStorage.getItem('userEmail');
 
@@ -11,6 +13,7 @@ const JoinGroup = () => {
         e.preventDefault();
         if (!userEmail) {
             alert('You must be logged in to join a group.');
+            navigate('/login');
             return;
         }
         if (!code) {
@@ -18,6 +21,16 @@ const JoinGroup = () => {
             return;
         }
 
+        const hasAgreed = localStorage.getItem('hasAgreedToGuidelines');
+        if (!hasAgreed) {
+            setIsModalOpen(true);
+            return;
+        }
+
+        await submitJoin();
+    };
+
+    const submitJoin = async () => {
         try {
             const response = await fetch('/api/join-group', {
                 method: 'POST',
@@ -57,6 +70,15 @@ const JoinGroup = () => {
                     <button type="submit" className="join-btn">Join Group</button>
                 </form>
             </div>
+
+            <GuidelinesModal 
+                isOpen={isModalOpen} 
+                onAgree={() => {
+                    setIsModalOpen(false);
+                    submitJoin();
+                }} 
+                onDecline={() => setIsModalOpen(false)} 
+            />
         </div>
     );
 };

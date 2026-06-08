@@ -1,9 +1,12 @@
-﻿import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import GuidelinesModal from './GuidelinesModal';
 import './Community.css';
 
 const Community = () => {
     const [groups, setGroups] = useState([]);
+    const [guidelinesModalOpen, setGuidelinesModalOpen] = useState(false);
+    const [pendingAction, setPendingAction] = useState(null);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -19,21 +22,43 @@ const Community = () => {
         fetchGroups();
     }, []);
 
+    const handleGroupAction = (action) => {
+        // Always show guidelines modal before any group action
+        setPendingAction(() => action);
+        setGuidelinesModalOpen(true);
+    };
+
+    const handleModalAgree = () => {
+        setGuidelinesModalOpen(false);
+        if (pendingAction) {
+            pendingAction();
+            setPendingAction(null);
+        }
+    };
+
+    const handleModalDecline = () => {
+        setGuidelinesModalOpen(false);
+        setPendingAction(null);
+    };
+
     const handleJoinGroup = (group) => {
         const userEmail = localStorage.getItem('userEmail');
         if (!userEmail) {
             alert('You must be logged in to join a group.');
+            navigate('/login');
             return;
         }
 
-        if (group.type === 'private') {
-            const code = prompt('This is a private group. Please enter the group code:');
-            if (code) {
-                verifyGroupCode(group.id, code, userEmail);
+        handleGroupAction(() => {
+            if (group.type === 'private') {
+                const code = prompt('This is a private group. Please enter the group code:');
+                if (code) {
+                    verifyGroupCode(group.id, code, userEmail);
+                }
+            } else {
+                navigate(`/group/${group.id}`);
             }
-        } else {
-            navigate(`/group/${group.id}`);
-        }
+        });
     };
 
     const verifyGroupCode = async (id, code, email) => {
@@ -60,8 +85,22 @@ const Community = () => {
                 <h1>Community</h1>
                 <p>Connect with others, share your story, and find support.</p>
                 <div className="community-actions">
-                    <button onClick={() => navigate('/create-group')} className="create-group-btn">Create New Group</button>
-                    <button onClick={() => navigate('/join-group')} className="join-group-btn">Join with Code</button>
+                    <button onClick={() => {
+                        if (!localStorage.getItem('userEmail')) {
+                            alert('You must be logged in to create a group.');
+                            navigate('/login');
+                        } else {
+                            handleGroupAction(() => navigate('/create-group'));
+                        }
+                    }} className="create-group-btn">Create New Group</button>
+                    <button onClick={() => {
+                        if (!localStorage.getItem('userEmail')) {
+                            alert('You must be logged in to join a group.');
+                            navigate('/login');
+                        } else {
+                            handleGroupAction(() => navigate('/join-group'));
+                        }
+                    }} className="join-group-btn">Join with Code</button>
                 </div>
             </div>
             <div className="groups-list">
@@ -76,6 +115,12 @@ const Community = () => {
                     </div>
                 ))}
             </div>
+            
+            <GuidelinesModal 
+                isOpen={guidelinesModalOpen} 
+                onAgree={handleModalAgree} 
+                onDecline={handleModalDecline} 
+            />
         </div>
     );
 };

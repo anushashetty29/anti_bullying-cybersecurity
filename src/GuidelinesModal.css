@@ -1,0 +1,242 @@
+/* ===== OVERLAY ===== */
+.gm-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.75);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    padding: 16px;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+
+.gm-overlay.gm-visible {
+    opacity: 1;
+}
+
+/* ===== CARD ===== */
+.gm-card {
+    background: linear-gradient(145deg, #1a1a2e, #16213e);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 20px;
+    width: 100%;
+    max-width: 520px;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 25px 60px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 59, 59, 0.15);
+    transform: scale(0.92) translateY(20px);
+    transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.2s ease;
+    opacity: 0;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255,255,255,0.1) transparent;
+}
+
+.gm-card.gm-card-visible {
+    transform: scale(1) translateY(0);
+    opacity: 1;
+}
+
+/* ===== HEADER ===== */
+.gm-header {
+    text-align: center;
+    padding: 32px 32px 20px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+.gm-shield-icon {
+    font-size: 48px;
+    margin-bottom: 12px;
+    filter: drop-shadow(0 0 16px rgba(255, 59, 59, 0.4));
+    display: block;
+}
+
+.gm-title {
+    font-size: 24px;
+    font-weight: 800;
+    color: #ffffff;
+    margin: 0 0 8px;
+    letter-spacing: -0.5px;
+}
+
+.gm-subtitle {
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.5);
+    margin: 0;
+}
+
+/* ===== RULES ===== */
+.gm-rules {
+    padding: 20px 28px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.gm-rule {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    border-radius: 10px;
+    padding: 12px 14px;
+    transition: background 0.2s;
+}
+
+.gm-rule:hover {
+    background: rgba(255, 255, 255, 0.07);
+}
+
+.gm-rule-warning {
+    background: rgba(255, 59, 59, 0.08) !important;
+    border-color: rgba(255, 59, 59, 0.25) !important;
+}
+
+.gm-rule-num {
+    font-size: 11px;
+    font-weight: 800;
+    color: rgba(255, 255, 255, 0.3);
+    min-width: 18px;
+    padding-top: 1px;
+}
+
+.gm-rule-icon {
+    font-size: 16px;
+    line-height: 1.4;
+    min-width: 20px;
+}
+
+.gm-rule-text {
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.8);
+    line-height: 1.5;
+}
+
+.gm-bold {
+    color: #ff6b6b !important;
+    font-weight: 700;
+}
+
+/* ===== CHECKBOX ===== */
+.gm-checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 4px 28px 20px;
+    cursor: pointer;
+    padding: 14px 16px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    transition: background 0.2s, border-color 0.2s;
+}
+
+.gm-checkbox-label:hover {
+    background: rgba(255, 255, 255, 0.07);
+}
+
+.gm-checkbox-input {
+    display: none;
+}
+
+.gm-custom-checkbox {
+    width: 22px;
+    height: 22px;
+    min-width: 22px;
+    border-radius: 6px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    background: rgba(255, 255, 255, 0.05);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: 800;
+    color: #2ecc71;
+    transition: all 0.2s;
+}
+
+.gm-checkbox-input:checked ~ .gm-custom-checkbox,
+.gm-checkbox-label:has(input:checked) .gm-custom-checkbox {
+    background: rgba(46, 204, 113, 0.15);
+    border-color: #2ecc71;
+}
+
+.gm-checkbox-text {
+    font-size: 14px;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.85);
+    line-height: 1.4;
+}
+
+/* ===== BUTTONS ===== */
+.gm-actions {
+    display: flex;
+    gap: 12px;
+    padding: 0 28px 28px;
+}
+
+.gm-cancel-btn {
+    flex: 1;
+    padding: 14px;
+    border: none;
+    border-radius: 10px;
+    background: rgba(231, 76, 60, 0.15);
+    color: #e74c3c;
+    border: 1px solid rgba(231, 76, 60, 0.3);
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+    letter-spacing: 0.3px;
+}
+
+.gm-cancel-btn:hover {
+    background: rgba(231, 76, 60, 0.25);
+    border-color: rgba(231, 76, 60, 0.5);
+    transform: translateY(-1px);
+}
+
+.gm-agree-btn {
+    flex: 1.4;
+    padding: 14px;
+    border: none;
+    border-radius: 10px;
+    background: rgba(149, 165, 166, 0.15);
+    color: rgba(255, 255, 255, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    font-size: 15px;
+    font-weight: 700;
+    cursor: not-allowed;
+    transition: all 0.25s;
+    letter-spacing: 0.3px;
+}
+
+.gm-agree-btn.gm-agree-active {
+    background: linear-gradient(135deg, #2ecc71, #27ae60);
+    color: #fff;
+    border-color: transparent;
+    cursor: pointer;
+    box-shadow: 0 4px 20px rgba(46, 204, 113, 0.35);
+}
+
+.gm-agree-btn.gm-agree-active:hover {
+    background: linear-gradient(135deg, #27ae60, #219a52);
+    transform: translateY(-1px);
+    box-shadow: 0 6px 24px rgba(46, 204, 113, 0.45);
+}
+
+/* ===== SCROLLBAR ===== */
+.gm-card::-webkit-scrollbar {
+    width: 5px;
+}
+.gm-card::-webkit-scrollbar-track {
+    background: transparent;
+}
+.gm-card::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+}

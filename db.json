@@ -1,36 +1,68 @@
 {
-    "groups": [
-        {
-            "id": "1",
-            "name": "General Discussion",
-            "description": "A place to talk about anything and everything.",
-            "type": "public",
-            "posts": [
-                {
-                    "author": "User1",
-                    "content": "Welcome to the group!"
-                }
-            ]
-        },
-        {
-            "id": "2",
-            "name": "Cyberbullying Support",
-            "description": "Share experiences and get support from others.",
-            "type": "public",
-            "posts": [
-                {
-                    "author": "User2",
-                    "content": "This is a safe space."
-                }
-            ]
-        },
-        {
-            "id": "3",
-            "name": "Project Phoenix",
-            "description": "A private group for team collaboration.",
-            "type": "private",
-            "code": "SECRET123",
-            "posts": []
-        }
-    ]
+  "users": [
+    {
+      "email": "anushashetty800@gmail.com",
+      "password": "$2b$10$Til3tchhbXh5rEVr5/kNYOP0gZXmPK0BfXkoiDBUP8jq4mOodMvQm",
+      "name": "anusha",
+      "_id": "user_1780563766744",
+      "resetPasswordToken": "ac0a4205e8304bceaa2f50fcc3061c1734beb782",
+      "resetPasswordExpires": 1780581199405
+    },
+    {
+      "email": "testuser@gmail.com",
+      "password": "$2b$10$kpOPcf5ioUahd7xf8Ga7DOYPqAAlvMeGRLwkhgnelKNErdFdwqK7m",
+      "name": "Test User",
+      "_id": "user_1780658568060"
+    },
+    {
+      "email": "moduser@gmail.com",
+      "password": "$2b$10$I.hBNKTnfHhnI.zMIzgYbuUIVRQatN7JgSY5HQnnFfclgd1wEv3yC",
+      "name": "ModerateUser",
+      "_id": "user_1780659779392"
+    }
+  ],
+  "groups": [
+    {
+      "_id": "gid_1780563802704",
+      "name": "life",
+      "description": "hello",
+      "type": "public",
+      "code": null
+    },
+    {
+      "_id": "gid_1780658451049",
+      "name": "friends ",
+      "description": "alone",
+      "type": "public",
+      "code": null
+    },
+    {
+      "_id": "gid_1780658949722",
+      "name": "Support Circle",
+      "description": "A safe space for support",
+      "type": "public",
+      "code": null
+    }
+  ],
+  "posts": [
+    {
+      "_id": "post_1780659970460",
+      "group_id": "gid_1780658451049",
+      "author_email": "anushashetty800@gmail.com",
+      "author_name": "anusha",
+      "content": "hi",
+      "timestamp": "2026-06-05T11:46:10.460Z"
+    },
+    {
+      "_id": "post_1780659976727",
+      "group_id": "gid_1780658451049",
+      "author_email": "anushashetty800@gmail.com",
+      "author_name": "anusha",
+      "content": "hi",
+      "timestamp": "2026-06-05T11:46:16.727Z"
+    }
+  ],
+  "members": [],
+  "reports": [],
+  "reportMessages": []
 }

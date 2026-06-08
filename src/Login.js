@@ -1,4 +1,4 @@
-﻿import React, { useState } from 'react';
+import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import './Login.css';
 
@@ -71,6 +71,9 @@ function Login() {
                 {showPassword ? 'Hide' : 'Show'}
               </span>
             </div>
+          </div>
+          <div className="forgot-password-container">
+            <Link to="/forgot-password">Forgot password?</Link>
           </div>
           {error && <p className="error-msg">{error}</p>}
           <button type="submit" className="login-btn">Login</button>
