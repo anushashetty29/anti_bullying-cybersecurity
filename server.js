@@ -7,7 +7,6 @@ const bcrypt = require('bcrypt');
 const mongoose = require('mongoose');
 const fs = require('fs');
 const path = require('path');
-
 // File-based database fallback
 const dbPath = path.join(__dirname, 'db.json');
 
@@ -132,8 +131,8 @@ const nodemailer = require('nodemailer');
 const transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
-        user: 'anushashetty242@gmail.com', // âš ï¸ Put your Gmail address here
-        pass: 'zykjokqscfekjdkc' // âš ï¸ Put your Gmail App Password here
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS
     }
 });
 
@@ -324,19 +323,19 @@ const userLastMessage = new Map(); // email -> { content: string, count: number 
 
 // Bad words list (common offensive/abusive terms, and illegal/harmful content keywords)
 const BAD_WORDS = [
-    'idiot','stupid','dumb','moron','loser','freak','ugly','fat','retard','retarded',
-    'hate','kill','murder','die','suicide','shut up','shutup','bitch','bastard',
-    'ass','asshole','crap','damn','hell','piss','shit','fuck','fucker','fucking',
-    'sex','porn','nude','naked','whore','slut','rape','bully','bullying',
-    'harass','harassment','threat','abuse','abuser','abusive','racist','racism',
-    'nigger','faggot','fag','gay','lesbian','homo','tranny','cunt',
-    'worthless','useless','pathetic','disgusting','trash','garbage','scum',
+    'idiot', 'stupid', 'dumb', 'moron', 'loser', 'freak', 'ugly', 'fat', 'retard', 'retarded',
+    'hate', 'kill', 'murder', 'die', 'suicide', 'shut up', 'shutup', 'bitch', 'bastard',
+    'ass', 'asshole', 'crap', 'damn', 'hell', 'piss', 'shit', 'fuck', 'fucker', 'fucking',
+    'sex', 'porn', 'nude', 'naked', 'whore', 'slut', 'rape', 'bully', 'bullying',
+    'harass', 'harassment', 'threat', 'abuse', 'abuser', 'abusive', 'racist', 'racism',
+    'nigger', 'faggot', 'fag', 'gay', 'lesbian', 'homo', 'tranny', 'cunt',
+    'worthless', 'useless', 'pathetic', 'disgusting', 'trash', 'garbage', 'scum',
     // illegal or harmful content keywords
-    'hack','malware','exploit','ddos','virus','pirate','cocaine','heroin','meth','weed',
-    'illegal drugs','weapons','bombs','bomb','gun','weapon',
+    'hack', 'malware', 'exploit', 'ddos', 'virus', 'pirate', 'cocaine', 'heroin', 'meth', 'weed',
+    'illegal drugs', 'weapons', 'bombs', 'bomb', 'gun', 'weapon',
     // additional harmful terms
-    'kys','kill yourself','go die','nobody likes you','you should die',
-    'self harm','selfharm','cut yourself','end your life'
+    'kys', 'kill yourself', 'go die', 'nobody likes you', 'you should die',
+    'self harm', 'selfharm', 'cut yourself', 'end your life'
 ];
 
 const URL_REGEX = /(https?:\/\/[^\s]+)/g;
@@ -513,7 +512,7 @@ const checkFreezeStatus = async (email) => {
         if (userIndex === -1) return { isFrozen: false, minutesLeft: 0, reason: '' };
         const user = fileDb.users[userIndex];
         if (!user.isFrozen) return { isFrozen: false, minutesLeft: 0, reason: '' };
-        
+
         if (!user.freezeUntil || new Date(user.freezeUntil) <= new Date(now)) {
             fileDb.users[userIndex].isFrozen = false;
             fileDb.users[userIndex].freezeUntil = null;
@@ -901,7 +900,7 @@ Thank you for being part of their support system.
         if (!reportData.email) {
             return res.status(200).json({ success: true, message: 'Report submitted. No email provided for confirmation.', id: reportId });
         }
-        
+
         const mailOptions = {
             from: 'anushashetty242@gmail.com', // ⚠️ Match this with auth user
             to: reportData.email, // Send to the email provided in the report form
@@ -1085,7 +1084,7 @@ io.on('connection', (socket) => {
         if (!groupOnlineLists[groupId]) {
             groupOnlineLists[groupId] = [];
         }
-        
+
         // Add if not exists
         const existing = groupOnlineLists[groupId].find(u => u.email === userEmail);
         if (!existing) {
@@ -1093,7 +1092,7 @@ io.on('connection', (socket) => {
         } else if (userName && existing.name === existing.email.split('@')[0]) {
             existing.name = userName;
         }
-        
+
         io.to(groupId).emit('update_online_users', groupOnlineLists[groupId]);
 
         if (useFileDb) {
