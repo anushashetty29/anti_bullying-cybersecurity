@@ -19,6 +19,12 @@
       "password": "$2b$10$I.hBNKTnfHhnI.zMIzgYbuUIVRQatN7JgSY5HQnnFfclgd1wEv3yC",
       "name": "ModerateUser",
       "_id": "user_1780659779392"
+    },
+    {
+      "email": "anushashetty292006@gmail.com",
+      "password": "$2b$10$GNw16XkljofE0TMqylSS/.5uYZrSM8sV7ngJX3U8XuNhi/BM6yArG",
+      "name": "anusha",
+      "_id": "user_1781009053285"
     }
   ],
   "groups": [
@@ -63,6 +69,35 @@
     }
   ],
   "members": [],
-  "reports": [],
+  "reports": [
+    {
+      "_id": "rep_1781009113055",
+      "name": "anu",
+      "email": "anushashetty292006@gmail.com",
+      "anonymous": true,
+      "platform": "Twitter / X",
+      "type": "Exclusion / Isolation",
+      "severity": "Medium",
+      "details": "aa",
+      "status": "pending",
+      "trusted_contact_name": "",
+      "trusted_contact_email": "",
+      "timestamp": "2026-06-09T12:45:13.055Z"
+    },
+    {
+      "_id": "rep_1781009115247",
+      "name": "anu",
+      "email": "anushashetty292006@gmail.com",
+      "anonymous": true,
+      "platform": "Twitter / X",
+      "type": "Exclusion / Isolation",
+      "severity": "Medium",
+      "details": "aa",
+      "status": "pending",
+      "trusted_contact_name": "",
+      "trusted_contact_email": "",
+      "timestamp": "2026-06-09T12:45:15.247Z"
+    }
+  ],
   "reportMessages": []
 }
