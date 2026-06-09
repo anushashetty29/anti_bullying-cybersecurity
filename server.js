@@ -136,6 +136,15 @@ const transporter = nodemailer.createTransport({
     }
 });
 
+// Verify email configuration on startup
+transporter.verify((error, success) => {
+    if (error) {
+        console.error('📧 Nodemailer verification failed:', error.message);
+    } else {
+        console.log('📧 Email server connection successful. Ready to send emails.');
+    }
+});
+
 const isValidObjectId = (value) => mongoose.Types.ObjectId.isValid(value);
 
 // API endpoint to get all groups
